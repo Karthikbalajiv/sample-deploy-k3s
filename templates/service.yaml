@@ -1,0 +1,19 @@
+# Chart name is same for service ,deployment and ingress as this chart itself an application so service forwards to deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "test-chart.fullname" . }} 
+  namespace: {{ .Values.namespace }}         # change if needed when creating chart for other application
+  labels:
+    {{- include "test-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 80                     # changed
+      protocol: TCP                      # changed
+      name: http
+      nodePort: {{ .Values.service.nodePort}}
+  selector:
+    {{- include "test-chart.selectorLabels" . | nindent 4 }}

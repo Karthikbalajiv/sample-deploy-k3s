@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: test-chart
+  namespace: prod  # Namespace for the HelmRelease resource
+spec:
+  releaseName: test-chart-prod     # use this for tracking application version history and rollback
+  targetNamespace: prod  # Namespace where the chart will be deployed
+  chart:
+    spec:
+      chart: test-chart # Replace with the path to your modified chart
+      version: "1.1.0"  # Replace with the chart version
+      # sourceRef:
+      #   kind: HelmRepository  # Type of the source
+      #   name: test-chart  # Name of your Git repository
+      #   namespace: prod  # Namespace where the repo is located
+  values:
+    service:
+      type: NodePort
+      port: 80
+      nodePort: 30004
+    image:
+      repository: 8973281137/sample_kb
+      pullPolicy: Always
+      tag: "v1"
+  interval: 1m
+  timeout: 5m
+  healthChecks:
+    - type: readiness
+      path: /health  # Adjust based on your application
+
+  
